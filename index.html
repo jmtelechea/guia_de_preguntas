@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía de Práctica — Economía I</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:          #0A2540;
+      --navy-light:    #1a3a5c;
+      --accent:        #2563eb;
+      --accent-light:  #dbeafe;
+      --success:       #16a34a;
+      --success-light: #dcfce7;
+      --warning:       #d97706;
+      --warning-light: #fef3c7;
+      --danger:        #dc2626;
+      --danger-light:  #fee2e2;
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-800);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--navy);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-title    { font-size: 1.05rem; font-weight: 600; }
+    .header-subtitle { font-size: 0.78rem; opacity: 0.65; margin-top: 2px; }
+    .student-badge {
+      font-size: 0.82rem;
+      background: rgba(255,255,255,0.14);
+      padding: 0.35rem 0.8rem;
+      border-radius: 20px;
+      display: none;
+    }
+
+    /* ── Container ── */
+    .container { max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem; }
+
+    /* ── Screens ── */
+    .screen        { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Card ── */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* ── Login ── */
+    .login-card      { max-width: 460px; margin: 3rem auto; text-align: center; }
+    .login-icon      { width: 68px; height: 68px; background: var(--accent-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2rem; }
+    .login-title     { font-size: 1.5rem; font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; }
+    .login-subtitle  { color: var(--gray-600); font-size: 0.92rem; margin-bottom: 1.75rem; line-height: 1.5; }
+
+    .form-row        { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; }
+    .form-group      { margin-bottom: 1rem; text-align: left; }
+    label            { display: block; font-size: 0.87rem; font-weight: 500; color: var(--gray-700); margin-bottom: 0.35rem; }
+
+    input[type="text"], input[type="email"], input[type="password"], select, textarea {
+      width: 100%;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 0.72rem 1rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--gray-800);
+      background: white;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+    textarea         { resize: vertical; min-height: 145px; line-height: 1.65; }
+    textarea:disabled { background: var(--gray-50); color: var(--gray-600); cursor: default; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      padding: 0.75rem 1.5rem; border-radius: 8px;
+      font-size: 0.95rem; font-weight: 500; cursor: pointer;
+      border: none; transition: all 0.2s; font-family: inherit;
+    }
+    .btn-primary   { background: var(--navy); color: white; }
+    .btn-primary:hover   { background: var(--navy-light); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-secondary { background: var(--gray-100); color: var(--gray-700); }
+    .btn-secondary:hover { background: var(--gray-200); }
+    .btn-success   { background: var(--success); color: white; }
+    .btn-success:hover   { background: #15803d; }
+    .btn-success:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-full      { width: 100%; }
+
+    /* ── Page header ── */
+    .page-title    { font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 0.35rem; }
+    .page-subtitle { font-size: 0.9rem; color: var(--gray-600); }
+
+    /* ── Alert ── */
+    .alert { padding: 0.85rem 1rem; border-radius: 8px; font-size: 0.87rem; line-height: 1.5; }
+    .alert-warning { background: var(--warning-light); color: #92400e; border: 1px solid #fde68a; }
+    .alert-success { background: var(--success-light); color: #14532d; border: 1px solid #86efac; }
+    .alert-danger  { background: var(--danger-light);  color: #7f1d1d; border: 1px solid #fca5a5; }
+
+    /* ── Units grid ── */
+    .units-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Unlocked unit card */
+    .unit-card {
+      background: white;
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .unit-card:hover { border-color: var(--navy); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(10,37,64,0.1); }
+
+    /* Locked unit card */
+    .unit-card-locked {
+      background: var(--gray-50);
+      border: 2px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 1.25rem;
+      position: relative;
+      cursor: default;
+    }
+    .unit-card-locked .unit-title { color: var(--gray-500); }
+    .unit-card-locked .unit-desc  { color: var(--gray-400); }
+
+    .unit-number  { font-size: 0.73rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.07em; }
+    .unit-title   { font-size: 0.95rem; font-weight: 600; color: var(--navy); margin: 0.35rem 0 0.25rem; }
+    .unit-desc    { font-size: 0.8rem; color: var(--gray-600); line-height: 1.45; }
+    .unit-progress { margin-top: 0.7rem; font-size: 0.78rem; color: var(--gray-400); }
+    .unit-badge   { position: absolute; top: 0.7rem; right: 0.7rem; background: var(--success-light); color: var(--success); padding: 0.18rem 0.5rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .unit-lock-icon { position: absolute; top: 0.75rem; right: 0.75rem; font-size: 1.1rem; opacity: 0.4; }
+
+    /* Unlock form (inline, inside locked card) */
+    .unlock-form { margin-top: 1rem; display: none; }
+    .unlock-form.visible { display: block; }
+    .unlock-input-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+    .unlock-input-row input { flex: 1; padding: 0.55rem 0.75rem; font-size: 0.85rem; border-radius: 6px; border: 1.5px solid var(--gray-300); outline: none; font-family: inherit; }
+    .unlock-input-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,0.1); }
+    .btn-unlock { background: var(--navy); color: white; border: none; padding: 0.55rem 0.9rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .unlock-error { font-size: 0.78rem; color: var(--danger); margin-top: 0.35rem; display: none; }
+    .btn-enter-code { margin-top: 0.8rem; background: transparent; border: 1.5px solid var(--gray-300); color: var(--gray-600); padding: 0.45rem 0.9rem; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .btn-enter-code:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── Question screen ── */
+    .question-header   { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .btn-back          { background: transparent; border: 1.5px solid var(--gray-200); color: var(--gray-600); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; font-family: inherit; transition: all 0.2s; white-space: nowrap; }
+    .btn-back:hover    { border-color: var(--gray-400); color: var(--gray-800); }
+    .question-unit-name { font-size: 0.78rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* Progress */
+    .progress-container { margin-bottom: 1.25rem; }
+    .progress-label     { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--gray-600); margin-bottom: 0.45rem; }
+    .progress-bar-bg    { background: var(--gray-200); height: 6px; border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill  { background: var(--navy); height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+    /* Dots */
+    .question-dots { display: flex; gap: 5px; margin-bottom: 1.4rem; flex-wrap: wrap; }
+    .q-dot          { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--gray-200); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: var(--gray-400); cursor: pointer; transition: all 0.15s; }
+    .q-dot:hover    { border-color: var(--navy); color: var(--navy); transform: scale(1.15); }
+    .q-dot.current  { border-color: var(--navy); background: var(--navy); color: white; cursor: default; transform: none; }
+    .q-dot.current:hover { border-color: var(--navy); color: white; transform: none; }
+    .q-dot.answered { border-color: var(--success); background: var(--success-light); color: var(--success); }
+
+    /* Question */
+    .question-number { font-size: 0.75rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.7rem; }
+    .question-text   { font-size: 1.08rem; font-weight: 500; color: var(--navy); line-height: 1.65; margin-bottom: 1.5rem; }
+
+    /* Result */
+    .result-section        { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1.5px solid var(--gray-200); display: none; }
+    .result-section.visible { display: block; }
+
+    .correct-answer-box {
+      background: var(--success-light);
+      border: 1.5px solid #86efac;
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .correct-answer-title { font-size: 0.76rem; font-weight: 700; color: var(--success); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.7rem; }
+    .correct-answer-text  { font-size: 0.97rem; color: var(--gray-800); line-height: 1.75; }
+
+    .result-actions { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+
+    /* ── Question navigation ── */
+    .question-nav { display: flex; gap: 0.9rem; margin-top: 1.25rem; align-items: center; }
+
+    /* ── Correct answers reveal (post-envío) ── */
+    .reveal-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1.5px solid var(--gray-200); }
+    .reveal-title   { font-size: 0.95rem; font-weight: 600; color: var(--navy); margin-bottom: 1rem; }
+    .reveal-item {
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .reveal-q-label   { font-size: 0.72rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
+    .reveal-q-text    { font-size: 0.87rem; font-weight: 500; color: var(--navy); margin-bottom: 0.6rem; line-height: 1.5; }
+    .reveal-student   { font-size: 0.83rem; color: var(--gray-700); margin-bottom: 0.5rem; line-height: 1.5; padding: 0.5rem 0.75rem; background: white; border-radius: 6px; border: 1px solid var(--gray-200); }
+    .reveal-correct   { font-size: 0.83rem; color: #14532d; line-height: 1.55; padding: 0.5rem 0.75rem; background: var(--success-light); border-radius: 6px; border: 1px solid #86efac; }
+    .reveal-sub-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+
+    /* ── Summary ── */
+    .summary-questions-list { margin: 1rem 0 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .summary-q-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.75rem 1rem; border-radius: 8px;
+      background: var(--gray-50); border: 1.5px solid var(--gray-200);
+      font-size: 0.85rem;
+    }
+    .summary-q-num  { font-weight: 700; color: var(--success); min-width: 20px; }
+    .summary-q-text { color: var(--gray-700); line-height: 1.5; }
+
+    .send-section   { padding-top: 1.5rem; border-top: 1.5px solid var(--gray-200); margin-top: 1rem; }
+    .send-title     { font-size: 0.95rem; font-weight: 600; color: var(--navy); margin-bottom: 0.4rem; }
+    .send-desc      { font-size: 0.85rem; color: var(--gray-600); margin-bottom: 1rem; line-height: 1.5; }
+    .send-status    { margin-top: 0.85rem; font-size: 0.87rem; display: none; }
+    .send-status.visible { display: block; }
+
+    .summary-actions { display: flex; gap: 0.9rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+    /* ── Responsive ── */
+    @media (max-width: 580px) {
+      .units-grid    { grid-template-columns: 1fr; }
+      .container     { padding: 1rem; }
+      .header        { padding: 0.85rem 1rem; }
+      .card          { padding: 1.4rem; }
+      .form-row      { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════ -->
+<header class="header">
+  <div>
+    <div class="header-title">📚 Guía de Práctica — Economía I</div>
+    <div class="header-subtitle">Facultad de Ciencias Económicas</div>
+  </div>
+  <div>
+    <span class="student-badge" id="studentBadge"></span>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════════════════════ -->
+<div class="container">
+
+  <!-- ── Login ── -->
+  <div class="screen active" id="screen-login">
+    <div class="card login-card">
+      <div class="login-icon">📝</div>
+      <div class="login-title">Guía de Práctica</div>
+      <div class="login-subtitle">Completá tus datos para comenzar. Tus respuestas quedarán registradas al finalizar cada unidad.</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inputNombre">Nombre</label>
+          <input type="text" id="inputNombre" placeholder="Tu nombre" autocomplete="given-name" />
+        </div>
+        <div class="form-group">
+          <label for="inputApellido">Apellido</label>
+          <input type="text" id="inputApellido" placeholder="Tu apellido" autocomplete="family-name" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputUniversidad">Universidad</label>
+        <input type="text" id="inputUniversidad" placeholder="Nombre de tu universidad" />
+      </div>
+      <div class="form-group">
+        <label for="inputCarrera">Carrera</label>
+        <input type="text" id="inputCarrera" placeholder="Nombre de tu carrera" />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="startSession()">Comenzar →</button>
+    </div>
+  </div>
+
+  <!-- ── Unit Selection ── -->
+  <div class="screen" id="screen-units">
+    <div class="page-title" id="welcomeText">Bienvenido/a</div>
+    <div class="page-subtitle">Seleccioná la unidad habilitada para esta semana</div>
+    <div class="units-grid" id="unitsGrid"></div>
+  </div>
+
+  <!-- ── Question ── -->
+  <div class="screen" id="screen-question">
+    <div class="question-header">
+      <button class="btn-back" onclick="goToUnits()">← Volver</button>
+      <div>
+        <div class="question-unit-name" id="questionUnitName"></div>
+      </div>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-label">
+        <span id="progressText">Pregunta 1 de 10</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-dots" id="questionDots"></div>
+
+    <div class="card">
+      <div class="question-number" id="questionNumber">Pregunta 1</div>
+      <div class="question-text" id="questionText"></div>
+
+      <div class="form-group">
+        <label for="studentAnswer">Tu respuesta</label>
+        <textarea id="studentAnswer" placeholder="Escribí tu respuesta acá…"></textarea>
+      </div>
+
+      <div class="question-nav">
+        <button class="btn btn-secondary" id="btnPrev" onclick="prevQuestion()">← Anterior</button>
+        <button class="btn btn-primary"   id="btnNext" onclick="nextQuestion()">Siguiente →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Summary ── -->
+  <div class="screen" id="screen-summary">
+    <div class="page-title">Unidad completada ✓</div>
+    <div class="page-subtitle" id="summaryUnitName"></div>
+
+    <div class="card" style="margin-top:1.5rem;">
+
+      <div style="font-size:0.88rem; font-weight:600; color:var(--gray-600); margin-bottom:0.25rem;">
+        Tus respuestas
+      </div>
+      <div class="summary-questions-list" id="summaryList"></div>
+
+      <!-- Envío a Google Sheets -->
+      <div class="send-section">
+        <div class="send-title">Registrar participación</div>
+        <div class="send-desc">Hacé clic en el botón para enviar tus respuestas a la planilla de la cátedra. Es obligatorio para que quede registrada tu participación.</div>
+        <button class="btn btn-success" id="btnSend" onclick="enviarRespuestas()">
+          Enviar respuestas →
+        </button>
+        <div class="send-status" id="sendStatus"></div>
+      </div>
+
+      <!-- Respuestas correctas — visible solo después de enviar -->
+      <div class="reveal-section" id="correctAnswersReveal" style="display:none;">
+        <div class="reveal-title">📖 Respuestas correctas</div>
+        <div id="correctAnswersList"></div>
+      </div>
+
+      <div class="summary-actions">
+        <button class="btn btn-secondary" onclick="goToUnits()">← Volver a unidades</button>
+        <button class="btn btn-secondary" onclick="retryUnit()">↺ Reintentar unidad</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  ⚙  CONFIGURACIÓN — EDITÁ ESTA SECCIÓN ANTES DE DISTRIBUIR
+// ══════════════════════════════════════════════════════════════════
+
+const CONFIG = {
+
+  // URL del Google Apps Script (ver instrucciones de configuración abajo).
+  // Reemplazá el texto con la URL que obtenés al publicar el script.
+  SHEETS_URL: 'https://script.google.com/macros/s/AKfycbzH0IDz3rJS5lBa3b1AE58OuTN-QKeGS1ISBUqeIe2cwu4oJUxH1lFnJ89v_oj7HT4daQ/exec',
+
+};
+
+// ══════════════════════════════════════════════════════════════════
+//  📋  INSTRUCCIONES — CÓMO CONECTAR CON GOOGLE SHEETS (5 minutos)
+// ══════════════════════════════════════════════════════════════════
+//
+//  1. Creá una planilla nueva en Google Sheets (sheets.google.com)
+//     y dejala abierta.
+//
+//  2. En esa planilla, ir a: Extensiones > Apps Script
+//
+//  3. Borrá el código de ejemplo y pegá este:
+//
+// ─────────────────────────────────────────────────────────────────
+//  function doPost(e) {
+//    try {
+//      const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+//      const data  = JSON.parse(e.postData.contents);
+//
+//      // Crear encabezados si la planilla está vacía
+//      if (sheet.getLastRow() === 0) {
+//        const h = ['Fecha/Hora','Nombre','Apellido','Universidad','Carrera','Email','Unidad',
+//                   'P1','P2','P3','P4','P5','P6','P7','P8','P9','P10'];
+//        sheet.appendRow(h);
+//        sheet.getRange(1,1,1,h.length).setFontWeight('bold');
+//      }
+//
+//      const fila = [
+//        new Date().toLocaleString('es-AR'),
+//        data.nombre, data.apellido, data.universidad, data.carrera, data.email||'', data.unidad,
+//        data.r1||'', data.r2||'', data.r3||'', data.r4||'', data.r5||'',
+//        data.r6||'', data.r7||'', data.r8||'', data.r9||'', data.r10||''
+//      ];
+//      sheet.appendRow(fila);
+//
+//      // ── Enviar email al alumno con sus respuestas ──
+//      if (data.email) {
+//        const asunto = `Tus respuestas — ${data.unidad}`;
+//        let cuerpo = `Hola ${data.nombre},\n\n`;
+//        cuerpo += `A continuación encontrás tus respuestas de la ${data.unidad}:\n\n`;
+//        for (let i = 1; i <= 10; i++) {
+//          const r = data['r' + i];
+//          if (r) cuerpo += `Pregunta ${i}:\n${r}\n\n`;
+//        }
+//        cuerpo += `Podés usarlas para repasar los conceptos vistos en clase.\n\nSaludos,\nEquipo docente`;
+//        GmailApp.sendEmail(data.email, asunto, cuerpo);
+//      }
+//
+//      return ContentService
+//        .createTextOutput(JSON.stringify({ status: 'ok' }))
+//        .setMimeType(ContentService.MimeType.JSON);
+//    } catch(err) {
+//      return ContentService
+//        .createTextOutput(JSON.stringify({ status: 'error', msg: err.toString() }))
+//        .setMimeType(ContentService.MimeType.JSON);
+//    }
+//  }
+// ─────────────────────────────────────────────────────────────────
+//
+//  4. Guardá el proyecto (Ctrl+S o el ícono de guardar).
+//
+//  5. Hacé clic en "Implementar" > "Nueva implementación".
+//     - Tipo: Aplicación web
+//     - Ejecutar como: Yo (tu cuenta)
+//     - Quién tiene acceso: Cualquier persona
+//     - Hacé clic en "Implementar" y autorizá los permisos.
+//
+//  6. Copiá la URL que aparece (empieza con https://script.google.com/...)
+//     y pegala en CONFIG.SHEETS_URL arriba (reemplazá el texto de ejemplo).
+//
+//  ¡Listo! Cada vez que un alumno envíe sus respuestas, aparecerán
+//  en una fila nueva de tu planilla.
+// ══════════════════════════════════════════════════════════════════
+
+
+// ══════════════════════════════════════════════════════════
+// PREGUNTAS — 9 UNIDADES × 10 PREGUNTAS
+// ══════════════════════════════════════════════════════════
+const UNIDADES = [
+  {
+    id: 1,
+    titulo: "Introducción a la Economía",
+    descripcion: "Escasez, elección, costo de oportunidad y FPP",
+    preguntas: [
+      { id:"1-1",  pregunta:"¿Qué es la escasez en economía y por qué es considerada el problema central de la disciplina?", clave:"La escasez surge porque los recursos son limitados pero las necesidades y deseos humanos son ilimitados. Es el problema central porque obliga a los agentes a elegir cómo asignar los recursos disponibles, generando la necesidad de la economía como disciplina." },
+      { id:"1-2",  pregunta:"Explicá el concepto de costo de oportunidad y dá un ejemplo aplicado a la vida universitaria.", clave:"El costo de oportunidad es el valor de la mejor alternativa a la que se renuncia al tomar una decisión. Ejemplo: el costo de oportunidad de estudiar es el ingreso que podría haberse obtenido trabajando en ese mismo tiempo." },
+      { id:"1-3",  pregunta:"¿Qué es la Frontera de Posibilidades de Producción (FPP) y qué información nos brinda sobre la eficiencia productiva?", clave:"La FPP muestra las combinaciones máximas posibles de producción de dos bienes dados los recursos y tecnología disponibles. Los puntos sobre la curva son eficientes, los interiores son ineficientes y los exteriores son inalcanzables actualmente." },
+      { id:"1-4",  pregunta:"¿Qué diferencia existe entre análisis económico positivo y normativo? Dá un ejemplo de cada uno.", clave:"El análisis positivo describe la realidad tal como es (ej: 'el desempleo es del 10%'), mientras que el normativo incorpora juicios de valor sobre cómo debería ser (ej: 'el gobierno debería bajar el desempleo'). Los economistas deben distinguir claramente entre ambos." },
+      { id:"1-5",  pregunta:"Describí los tres problemas económicos fundamentales que enfrenta cualquier sociedad.", clave:"Los tres problemas son: ¿Qué producir? (qué bienes y en qué cantidades), ¿Cómo producir? (con qué técnicas y factores) y ¿Para quién producir? (cómo distribuir el producto entre los miembros de la sociedad)." },
+      { id:"1-6",  pregunta:"¿Qué son los factores de producción? Nombrá y describí brevemente cada uno.", clave:"Los factores de producción son: tierra (recursos naturales), trabajo (capacidad humana física e intelectual), capital (bienes que se usan para producir otros bienes) y tecnología/capacidad empresarial. Son los insumos básicos del proceso productivo." },
+      { id:"1-7",  pregunta:"Explicá por qué la FPP suele tener forma cóncava con respecto al origen y qué principio refleja.", clave:"La concavidad refleja el principio de costos de oportunidad crecientes: a medida que se produce más de un bien, se debe resignar cantidades crecientes del otro, porque los recursos no son perfectamente sustituibles entre usos." },
+      { id:"1-8",  pregunta:"¿Qué significa que un punto esté por fuera de la FPP? ¿Qué condiciones permitirían alcanzarlo en el futuro?", clave:"Un punto exterior a la FPP es actualmente inalcanzable. Para alcanzarlo se requeriría un desplazamiento hacia afuera: mejoras tecnológicas, aumento de la cantidad de recursos disponibles o mejoras en su calidad." },
+      { id:"1-9",  pregunta:"¿Cuál es la diferencia entre microeconomía y macroeconomía? Dá un ejemplo de estudio de cada rama.", clave:"La microeconomía estudia decisiones individuales de consumidores y empresas en mercados específicos (ej: precio de la nafta). La macroeconomía analiza la economía en su conjunto (ej: inflación, desempleo, PBI del país)." },
+      { id:"1-10", pregunta:"¿Qué es un modelo económico y por qué los economistas simplifican la realidad para construirlos?", clave:"Un modelo económico es una representación simplificada de la realidad que permite analizar relaciones entre variables. Se simplifica para aislar los efectos de variables específicas manteniendo constantes otras (ceteris paribus), facilitando el análisis causal." },
+    ]
+  },
+  {
+    id: 2,
+    titulo: "Oferta y Demanda",
+    descripcion: "Leyes de oferta y demanda, equilibrio de mercado y desplazamientos de curvas",
+    preguntas: [
+      { id:"2-1",  pregunta:"Enunciá la Ley de la Demanda y explicá la relación entre precio y cantidad demandada.", clave:"La Ley de la Demanda establece que, ceteris paribus, cuando el precio de un bien aumenta la cantidad demandada disminuye, y viceversa. Esta relación inversa se debe al efecto sustitución y al efecto ingreso." },
+      { id:"2-2",  pregunta:"¿Qué diferencia existe entre un movimiento a lo largo de la curva de demanda y un desplazamiento de la curva? ¿Qué puede causar cada uno?", clave:"Un movimiento a lo largo de la curva ocurre cuando cambia el precio del bien. Un desplazamiento ocurre cuando cambian otros factores: ingreso del consumidor, precios de bienes relacionados, gustos o preferencias, expectativas." },
+      { id:"2-3",  pregunta:"Explicá la Ley de la Oferta y los principales determinantes que pueden desplazar la curva de oferta.", clave:"La Ley de la Oferta establece que, ceteris paribus, a mayor precio el productor ofrece mayor cantidad. Los desplazamientos se deben a: cambios en costos de producción, tecnología, precios de bienes relacionados en la producción, expectativas." },
+      { id:"2-4",  pregunta:"¿Qué es el equilibrio de mercado? ¿Qué ocurre cuando hay exceso de oferta o exceso de demanda?", clave:"El equilibrio es el punto donde la cantidad ofrecida iguala la cantidad demandada. El exceso de oferta (precio > equilibrio) genera presión a la baja del precio. El exceso de demanda (precio < equilibrio) genera presión al alza." },
+      { id:"2-5",  pregunta:"¿Qué es un bien normal y un bien inferior? Explicá cómo afecta a cada uno un aumento del ingreso de los consumidores.", clave:"Un bien normal es aquel cuya demanda aumenta cuando aumenta el ingreso. Un bien inferior es aquel cuya demanda disminuye cuando el ingreso aumenta porque los consumidores lo reemplazan por bienes de mayor calidad." },
+      { id:"2-6",  pregunta:"Definí bienes sustitutos y bienes complementarios. Dá un ejemplo de cada tipo y explicá cómo un cambio en el precio de uno afecta la demanda del otro.", clave:"Sustitutos son bienes que pueden reemplazarse mutuamente (ej: té y café). Si sube el precio del café, aumenta la demanda de té. Complementarios se consumen juntos (ej: autos y nafta). Si sube el precio de los autos, cae la demanda de nafta." },
+      { id:"2-7",  pregunta:"Usá el análisis de oferta y demanda para predecir qué pasará con el precio y la cantidad de equilibrio de la nafta si mejora la tecnología de extracción de petróleo y simultáneamente aumenta el ingreso de los consumidores.", clave:"La mejora tecnológica desplaza la oferta hacia la derecha, bajando el precio y subiendo la cantidad. El aumento del ingreso (bien normal) desplaza la demanda hacia la derecha, subiendo precio y cantidad. El efecto neto sobre el precio es ambiguo; la cantidad definitivamente aumenta." },
+      { id:"2-8",  pregunta:"¿Qué es el excedente del consumidor y qué es el excedente del productor? ¿Cómo se relacionan con el bienestar total en un mercado?", clave:"El excedente del consumidor es la diferencia entre lo que el consumidor está dispuesto a pagar y lo que efectivamente paga. El del productor es la diferencia entre el precio recibido y el costo. Su suma es el bienestar total, maximizado en el equilibrio competitivo." },
+      { id:"2-9",  pregunta:"¿Qué es un precio máximo y cuáles son sus efectos en el mercado? Dá un ejemplo.", clave:"Un precio máximo es una regulación que establece el precio más alto permitido, por debajo del precio de equilibrio. Genera exceso de demanda (escasez), colas, mercados negros y deterioro en la calidad. Ejemplo: control de alquileres." },
+      { id:"2-10", pregunta:"¿Qué es un precio mínimo y cuáles son sus efectos en el mercado? Dá un ejemplo.", clave:"Un precio mínimo es una regulación que establece el precio más bajo permitido, por encima del precio de equilibrio. Genera exceso de oferta. Ejemplo: el salario mínimo puede generar desempleo si está por encima del salario de equilibrio." },
+    ]
+  },
+  {
+    id: 3,
+    titulo: "Elasticidades",
+    descripcion: "Elasticidad precio, ingreso y cruzada de la demanda y la oferta",
+    preguntas: [
+      { id:"3-1",  pregunta:"¿Qué mide la elasticidad precio de la demanda? Escribí su fórmula e interpretá sus valores.", clave:"Mide el cambio porcentual en la cantidad demandada ante un cambio porcentual en el precio. Fórmula: Ep = %ΔQd / %ΔP. En valor absoluto: >1 es elástica, <1 es inelástica, =1 es unitaria." },
+      { id:"3-2",  pregunta:"Una empresa que vende un producto con demanda inelástica decide aumentar su precio. ¿Aumentará o disminuirá su ingreso total? Justificá.", clave:"Con demanda inelástica, el aumento porcentual del precio supera la caída porcentual de la cantidad. Por lo tanto el ingreso total (P×Q) aumenta. Esta es la relación clave entre elasticidad e ingreso total." },
+      { id:"3-3",  pregunta:"Nombrá y explicá tres factores que determinan que la demanda de un bien sea más o menos elástica.", clave:"1) Disponibilidad de sustitutos: más sustitutos implica más elasticidad. 2) Proporción del ingreso que representa el gasto en el bien: mayor proporción implica más elasticidad. 3) Horizonte temporal: en el largo plazo la demanda es más elástica." },
+      { id:"3-4",  pregunta:"¿Qué es la elasticidad ingreso de la demanda? ¿Qué valores indican si un bien es normal, inferior o de lujo?", clave:"Mide la variación porcentual de la cantidad demandada ante una variación porcentual del ingreso. Si Ey > 0: bien normal. Si Ey > 1: bien de lujo. Si Ey < 0: bien inferior." },
+      { id:"3-5",  pregunta:"Explicá qué es la elasticidad cruzada de la demanda y cómo permite identificar si dos bienes son sustitutos o complementarios.", clave:"Mide cómo varía la cantidad demandada de un bien ante cambios en el precio de otro. Si es positiva, los bienes son sustitutos. Si es negativa, son complementarios." },
+      { id:"3-6",  pregunta:"¿Qué es la elasticidad precio de la oferta y qué factores la determinan?", clave:"Mide el cambio porcentual en la cantidad ofrecida ante un cambio porcentual del precio. Factores: disponibilidad de insumos, facilidad de entrada al sector, horizonte temporal, capacidad ociosa disponible." },
+      { id:"3-7",  pregunta:"Si la elasticidad precio de la demanda de cigarrillos es de -0,4, ¿qué efecto tendrá un impuesto que encarece los cigarrillos un 20% sobre el consumo? ¿Y sobre los ingresos tributarios del gobierno?", clave:"Con elasticidad de -0,4, el consumo caerá un 8% (20% × 0,4). Como la demanda es inelástica, los ingresos tributarios aumentarán, ya que la caída en cantidad es menor al aumento en precio." },
+      { id:"3-8",  pregunta:"Explicá la paradoja del agricultor: ¿por qué una buena cosecha puede perjudicar a los agricultores?", clave:"Si la demanda de alimentos es inelástica, una buena cosecha aumenta la oferta y baja el precio significativamente, pero la cantidad vendida sube poco. El resultado neto puede ser una caída en el ingreso total de los agricultores." },
+      { id:"3-9",  pregunta:"¿Qué diferencia existe entre una curva de demanda perfectamente elástica y una perfectamente inelástica? Describí su forma gráfica y dá un ejemplo.", clave:"La demanda perfectamente elástica es horizontal (Ep → ∞): cualquier aumento de precio reduce la cantidad a cero. La perfectamente inelástica es vertical (Ep = 0): la cantidad no varía con el precio (ej: insulina para diabéticos a corto plazo)." },
+      { id:"3-10", pregunta:"¿Por qué la elasticidad precio de la demanda varía a lo largo de una curva de demanda lineal?", clave:"En una curva lineal, ΔQ/ΔP es constante pero la elasticidad = (ΔQ/ΔP) × (P/Q) varía porque la razón P/Q cambia. En precios altos (P alto, Q bajo) la demanda es elástica; en precios bajos (P bajo, Q alto) es inelástica." },
+    ]
+  },
+  {
+    id: 4,
+    titulo: "Teoría del Consumidor",
+    descripcion: "Utilidad, restricción presupuestaria, curvas de indiferencia y equilibrio",
+    preguntas: [
+      { id:"4-1",  pregunta:"¿Qué es la utilidad en economía? ¿Qué diferencia existe entre utilidad total y utilidad marginal?", clave:"La utilidad es la satisfacción que obtiene un consumidor al consumir un bien. La utilidad total es la satisfacción acumulada por una cantidad dada. La utilidad marginal es la satisfacción adicional obtenida por consumir una unidad más." },
+      { id:"4-2",  pregunta:"Enunciá la Ley de la Utilidad Marginal Decreciente y explicá sus implicancias para el comportamiento del consumidor.", clave:"A medida que se consume más unidades de un bien, la utilidad marginal de cada unidad adicional es menor. Esto implica que el consumidor está dispuesto a pagar menos por unidades adicionales y explica la pendiente negativa de la demanda individual." },
+      { id:"4-3",  pregunta:"¿Qué es la restricción presupuestaria? Escribí su ecuación y explicá qué representa geométricamente.", clave:"Muestra las combinaciones de bienes que el consumidor puede adquirir con su ingreso a los precios dados. Ecuación: I = Px·X + Py·Y. Geométricamente es una línea recta con pendiente -Px/Py." },
+      { id:"4-4",  pregunta:"¿Qué son las curvas de indiferencia? Enumerá y explicá sus principales propiedades.", clave:"Muestran combinaciones de dos bienes que proporcionan el mismo nivel de utilidad. Propiedades: 1) Pendiente negativa, 2) No se cruzan entre sí, 3) Son convexas al origen, 4) Las más alejadas del origen representan mayor utilidad." },
+      { id:"4-5",  pregunta:"¿Qué es la Tasa Marginal de Sustitución (TMS) y qué refleja económicamente?", clave:"La TMS es la cantidad de Y a la que el consumidor renuncia para obtener una unidad más de X manteniendo la misma utilidad. Refleja la valoración relativa subjetiva de los bienes. La TMS decreciente explica la convexidad de las curvas de indiferencia." },
+      { id:"4-6",  pregunta:"Describí la condición de equilibrio del consumidor. ¿Qué sucede en el punto óptimo de consumo?", clave:"El consumidor maximiza su utilidad donde la restricción presupuestaria es tangente a la curva de indiferencia más alta posible. En ese punto: TMS = Px/Py, equivalentemente UMx/Px = UMy/Py." },
+      { id:"4-7",  pregunta:"Explicá los efectos ingreso y sustitución ante una baja en el precio de un bien.", clave:"Efecto sustitución: el bien se vuelve relativamente más barato, el consumidor sustituye Y por X (siempre positivo para X). Efecto ingreso: la baja aumenta el poder adquisitivo real; si X es normal, también aumenta su consumo. Para bienes inferiores el efecto ingreso va en sentido contrario." },
+      { id:"4-8",  pregunta:"¿Qué es la curva de Engel y qué información proporciona sobre el tipo de bien?", clave:"Relaciona el ingreso del consumidor con la cantidad demandada manteniendo precios constantes. Pendiente positiva: bien normal. Pendiente negativa: bien inferior. Elasticidad ingreso > 1: bien de lujo." },
+      { id:"4-9",  pregunta:"¿Cómo afecta un aumento en el precio de un bien a la restricción presupuestaria? ¿Y un aumento en el ingreso?", clave:"Un aumento en el precio de X rota la restricción hacia adentro (cambia la pendiente). Un aumento del ingreso desplaza la restricción paralelamente hacia afuera: el consumidor puede comprar más de ambos bienes." },
+      { id:"4-10", pregunta:"¿Qué es un bien de Giffen? ¿En qué se diferencia de un bien inferior normal?", clave:"Un bien de Giffen es un bien inferior cuyo efecto ingreso negativo supera al efecto sustitución positivo: su demanda aumenta cuando sube su precio. A diferencia de un bien inferior normal, su curva de demanda tiene pendiente positiva, violando la ley de la demanda." },
+    ]
+  },
+  {
+    id: 5,
+    titulo: "Producción y Costos",
+    descripcion: "Función de producción, productividad y costos a corto y largo plazo",
+    preguntas: [
+      { id:"5-1",  pregunta:"¿Qué es la función de producción? ¿Qué diferencia existe entre el corto y el largo plazo en la teoría de la empresa?", clave:"La función de producción muestra la relación entre los factores productivos y la cantidad producida. En el corto plazo al menos un factor es fijo. En el largo plazo todos los factores son variables." },
+      { id:"5-2",  pregunta:"Definí producto total, producto marginal y producto medio del trabajo. Explicá la relación entre ellos.", clave:"Producto total: producción total con una cantidad dada de trabajo. Producto marginal: incremento en la producción por cada unidad adicional de trabajo. Producto medio: producción por unidad de trabajo. Cuando PMg > PMe, el PMe sube; cuando PMg < PMe, el PMe baja." },
+      { id:"5-3",  pregunta:"Enunciá la Ley de Rendimientos Marginales Decrecientes y explicá por qué ocurre.", clave:"A partir de cierto punto, al aumentar un factor variable manteniendo los demás fijos, el producto marginal comienza a decrecer. Ocurre porque los factores variables adicionales tienen cada vez menos del factor fijo con qué trabajar." },
+      { id:"5-4",  pregunta:"¿Cuáles son los costos fijos y variables? Dá ejemplos y explicá cómo se comportan a medida que aumenta la producción.", clave:"Los costos fijos no varían con la producción (ej: alquiler, seguros). Los costos variables cambian con el nivel de producción (ej: materia prima, salarios por hora). El costo total es la suma de ambos." },
+      { id:"5-5",  pregunta:"Explicá qué es el costo marginal y su relación con el costo variable medio. ¿Qué forma tienen estas curvas y por qué?", clave:"El costo marginal es el costo adicional de producir una unidad más. Tiene forma de U (inicialmente disminuye por rendimientos crecientes, luego aumenta por rendimientos decrecientes). El CMg corta al CVMe en su punto mínimo." },
+      { id:"5-6",  pregunta:"¿Qué son las economías de escala? ¿Qué diferencia hay entre rendimientos crecientes, constantes y decrecientes a escala?", clave:"Con rendimientos crecientes a escala, la producción crece más que los insumos (costo medio cae). Con constantes, crece en la misma proporción. Con decrecientes, crece menos (costo medio sube). Se aplican cuando todos los factores varían proporcionalmente." },
+      { id:"5-7",  pregunta:"¿Qué es el costo de oportunidad del capital propio del empresario y por qué debe incluirse al calcular el beneficio económico?", clave:"Es el rendimiento que ese capital obtendría en su mejor uso alternativo. Debe incluirse para calcular el beneficio económico. El beneficio contable puede ser positivo mientras el beneficio económico es cero o negativo." },
+      { id:"5-8",  pregunta:"Describí la relación entre la curva de costo total medio a largo plazo y las curvas de corto plazo.", clave:"La CTME LP (envolvente) es la curva formada por los puntos de tangencia de todas las posibles curvas de CMe de corto plazo, una para cada tamaño de planta posible. Cada curva de CMe de corto plazo es tangente a la de largo plazo en un único punto." },
+      { id:"5-9",  pregunta:"¿Por qué puede ser conveniente para una empresa continuar produciendo en el corto plazo incluso si tiene pérdidas?", clave:"Si el precio es mayor que el CVMe mínimo, la empresa produce porque los ingresos cubren los costos variables y contribuyen a cubrir parte de los costos fijos. Si P < CVMe mínimo, conviene cerrar temporalmente." },
+      { id:"5-10", pregunta:"Explicá qué son las deseconomías de escala y cuáles pueden ser sus causas organizacionales.", clave:"Las deseconomías de escala ocurren cuando el costo medio aumenta al crecer la escala. Se deben a problemas de coordinación en empresas muy grandes: dificultades de comunicación, burocratización, pérdida de motivación, problemas de información." },
+    ]
+  },
+  {
+    id: 6,
+    titulo: "Competencia Perfecta",
+    descripcion: "Características del mercado, maximización de beneficios y equilibrio de largo plazo",
+    preguntas: [
+      { id:"6-1",  pregunta:"Enumerá y explicá las cuatro características principales de un mercado de competencia perfecta.", clave:"1) Muchos compradores y vendedores (ninguno influye en el precio). 2) Producto homogéneo. 3) Libre entrada y salida del mercado. 4) Información perfecta (todos conocen precios y condiciones)." },
+      { id:"6-2",  pregunta:"¿Por qué una empresa en competencia perfecta es 'tomadora de precios'? ¿Cómo es la curva de demanda que enfrenta?", clave:"Porque es tan pequeña relativa al mercado que sus decisiones no afectan el precio. La curva de demanda que enfrenta es perfectamente elástica (horizontal) al precio de mercado." },
+      { id:"6-3",  pregunta:"Explicá la regla de maximización de beneficios P = CMg. ¿Por qué la empresa nunca produce donde P > CMg ni donde P < CMg?", clave:"Si P > CMg, cada unidad adicional genera más ingreso que costo: conviene producir más. Si P < CMg, la última unidad cuesta más de lo que genera: conviene producir menos. P = CMg es el único punto donde los beneficios son máximos." },
+      { id:"6-4",  pregunta:"¿Cuál es la condición de cierre a corto plazo de una empresa en competencia perfecta? Explicá el razonamiento.", clave:"La empresa debe cerrar si P < CVMe mínimo. En ese caso pierde más produciendo que cerrando. Si P ≥ CVMe, conviene seguir produciendo porque al menos cubre los costos variables y contribuye a cubrir los fijos." },
+      { id:"6-5",  pregunta:"¿Qué sucede con los beneficios económicos en el largo plazo en un mercado de competencia perfecta? Describí el mecanismo de ajuste.", clave:"En el largo plazo los beneficios económicos son cero. Si hay beneficios positivos, nuevas empresas entran, aumenta la oferta y baja el precio hasta eliminarlos. Si hay pérdidas, empresas salen, reduce la oferta y sube el precio." },
+      { id:"6-6",  pregunta:"Describí el equilibrio de largo plazo de una empresa en competencia perfecta. ¿Qué condición debe cumplirse simultáneamente?", clave:"P = CMg = CMe mínimo. La empresa opera en el punto mínimo de su CMe (máxima eficiencia), obtiene beneficio económico cero, y la cantidad producida iguala la demanda al precio de equilibrio." },
+      { id:"6-7",  pregunta:"¿Qué es el excedente del productor en un mercado competitivo y cómo se representa gráficamente?", clave:"Es la diferencia entre el precio que recibe el productor y el costo marginal de producir cada unidad. Gráficamente es el área entre la curva de oferta y el precio de equilibrio." },
+      { id:"6-8",  pregunta:"Explicá por qué la competencia perfecta se considera eficiente desde el punto de vista del bienestar social.", clave:"En el equilibrio competitivo: 1) Se maximiza el excedente total. 2) P = CMg: el valor que los consumidores asignan a la última unidad iguala el costo de producirla. No hay pérdida de peso muerto." },
+      { id:"6-9",  pregunta:"¿Qué es la curva de oferta de largo plazo de la industria? ¿Cuándo es horizontal, creciente o decreciente?", clave:"Muestra las combinaciones precio-cantidad de equilibrio de largo plazo. Es horizontal cuando los costos no varían con el tamaño de la industria. Creciente si la expansión sube los costos de los insumos. Decreciente si hay economías externas al crecer." },
+      { id:"6-10", pregunta:"¿Qué diferencia existe entre el beneficio contable y el beneficio económico? ¿Por qué en el largo plazo el beneficio económico es cero pero la empresa sigue operando?", clave:"El beneficio contable solo resta costos explícitos. El beneficio económico resta también los costos de oportunidad. Beneficio económico cero significa que el empresario gana exactamente lo que obtendría en su mejor alternativa: no tiene incentivos a salir." },
+    ]
+  },
+  {
+    id: 7,
+    titulo: "Monopolio",
+    descripcion: "Poder de mercado, maximización de beneficios y pérdida de eficiencia",
+    preguntas: [
+      { id:"7-1",  pregunta:"¿Qué es un monopolio y cuáles son las principales barreras a la entrada que lo sostienen?", clave:"El monopolio es una estructura de mercado con un único vendedor sin sustitutos cercanos. Barreras: 1) Control exclusivo de recursos clave. 2) Economías de escala. 3) Patentes y regulaciones gubernamentales. 4) Costos fijos muy elevados." },
+      { id:"7-2",  pregunta:"¿Por qué el ingreso marginal del monopolista es menor que el precio? Explicá el razonamiento.", clave:"Para vender una unidad adicional, el monopolista baja el precio de TODAS sus unidades. Por eso el IMg es menor que el precio: el ingreso extra de la unidad adicional se reduce por la caída de ingresos en las unidades anteriores." },
+      { id:"7-3",  pregunta:"¿Cuál es la regla de maximización de beneficios del monopolista? ¿Cómo determina el precio que cobra?", clave:"El monopolista maximiza beneficios produciendo donde IMg = CMg. Una vez determinada esa cantidad, fija el precio en la curva de demanda (el máximo que los consumidores están dispuestos a pagar por esa cantidad)." },
+      { id:"7-4",  pregunta:"¿Qué es la pérdida de peso muerto o ineficiencia del monopolio? Explicá por qué se produce.", clave:"Es la pérdida de bienestar social porque el monopolista produce menos y cobra más que en competencia perfecta. Hay transacciones mutuamente beneficiosas que no se realizan. Se produce porque el monopolista restringe la producción para mantener precios altos." },
+      { id:"7-5",  pregunta:"Comparando monopolio y competencia perfecta: ¿qué diferencias hay en precio, cantidad y beneficio de la empresa?", clave:"El monopolista cobra precio mayor, produce cantidad menor y obtiene beneficios económicos positivos a largo plazo (las barreras impiden la entrada). En competencia perfecta el precio iguala al CMg; en monopolio el precio supera al CMg." },
+      { id:"7-6",  pregunta:"¿Qué es la discriminación de precios? Explicá los tres tipos (primero, segundo y tercer grado) con un ejemplo de cada uno.", clave:"Primero grado: cobra a cada consumidor su máxima disposición a pagar (ej: subastas). Segundo grado: descuentos por volumen (ej: mayoristas). Tercer grado: diferencias por grupos identificables (ej: descuento estudiantes en cines)." },
+      { id:"7-7",  pregunta:"¿Qué es un monopolio natural y cuáles son las dificultades para regularlo?", clave:"Ocurre cuando los costos medios decrecen en todo el rango de demanda relevante. Dificultad: fijar P = CMg implica pérdidas para la empresa; fijar P = CMe es más factible pero requiere información sobre costos que la empresa puede manipular." },
+      { id:"7-8",  pregunta:"¿Puede el monopolista fijar libremente tanto precio como cantidad? Explicá la restricción que enfrenta.", clave:"No. El monopolista puede elegir la cantidad (el precio resulta de la demanda) o puede elegir el precio (la cantidad resulta de la demanda). La curva de demanda le impone la relación entre precio y cantidad." },
+      { id:"7-9",  pregunta:"¿Qué es el índice de Lerner y para qué sirve como medida del poder de mercado?", clave:"El índice de Lerner es (P - CMg) / P y mide el margen sobre el costo marginal como proporción del precio. Varía entre 0 (competencia perfecta) y valores cercanos a 1 (alto poder de mercado). Permite comparar el poder de mercado entre empresas o sectores." },
+      { id:"7-10", pregunta:"¿Por qué se dice que el monopolio es ineficiente desde el punto de vista social aunque puede ser eficiente desde el punto de vista privado?", clave:"Es eficiente privadamente porque maximiza los beneficios del dueño. Es ineficiente socialmente porque genera pérdida de peso muerto: hay unidades con valor para los consumidores mayor que su costo de producción que no se producen para mantener precios altos." },
+    ]
+  },
+  {
+    id: 8,
+    titulo: "Fallas de Mercado",
+    descripcion: "Externalidades, bienes públicos e información asimétrica",
+    preguntas: [
+      { id:"8-1",  pregunta:"¿Qué es una falla de mercado? ¿Por qué justifica la intervención del Estado según la teoría económica?", clave:"Una falla de mercado es una situación en la que el mercado no asigna los recursos eficientemente, resultando en un equilibrio subóptimo. Justifica la intervención del Estado cuando dicha intervención puede corregir la ineficiencia y aumentar el bienestar social." },
+      { id:"8-2",  pregunta:"¿Qué es una externalidad? Diferenciá entre externalidad positiva y negativa, y dá un ejemplo de cada una.", clave:"Una externalidad es un efecto de la actividad de un agente sobre terceros no reflejado en el precio de mercado. Negativa: polución de una fábrica (el mercado sobreproducirá). Positiva: educación que beneficia a la sociedad más allá del individuo (el mercado subproducirá)." },
+      { id:"8-3",  pregunta:"¿Cómo puede el Estado corregir una externalidad negativa mediante un impuesto pigouviano? Explicá el mecanismo.", clave:"El impuesto pigouviano se fija igual al costo marginal del daño externo. Al aumentar el costo privado en la magnitud del daño social, obliga al productor a internalizar la externalidad. El nuevo equilibrio privado coincide con el óptimo social." },
+      { id:"8-4",  pregunta:"Enunciá el Teorema de Coase y explicá cuándo el mercado puede resolver las externalidades sin intervención del Estado.", clave:"Si los derechos de propiedad están bien definidos y los costos de negociación son cero, los agentes llegarán voluntariamente a un acuerdo eficiente sin importar quién tenga el derecho inicial. El mercado puede resolver la externalidad cuando la negociación es factible." },
+      { id:"8-5",  pregunta:"¿Qué son los bienes públicos? Explicá los conceptos de no rivalidad y no exclusión.", clave:"Los bienes públicos son no rivales (el consumo de uno no reduce la disponibilidad para otros) y no excluyentes (no se puede impedir el consumo a quien no paga, ej: defensa nacional). Generan el problema del free rider y llevan a subprovisión privada." },
+      { id:"8-6",  pregunta:"¿Qué es el problema del 'free rider' y por qué impide que el mercado provea bienes públicos eficientemente?", clave:"El free rider es quien se beneficia de un bien público sin pagar por él. Como no puede ser excluido, las empresas privadas no tienen incentivos para producir bienes públicos. Esto lleva a subprovisión o no provisión privada." },
+      { id:"8-7",  pregunta:"¿Qué es la selección adversa? Explicá el ejemplo del mercado de autos usados de Akerlof.", clave:"Ocurre cuando la información asimétrica hace que los 'malos productos' desplacen a los buenos. Akerlof mostró que en el mercado de autos usados, como los compradores no saben la calidad, ofrecen el precio promedio; los vendedores de autos buenos retiran sus autos y solo quedan los defectuosos." },
+      { id:"8-8",  pregunta:"¿Qué es el riesgo moral (moral hazard) y en qué situaciones económicas aparece?", clave:"Ocurre cuando una parte cambia su comportamiento (tomando más riesgo) porque las consecuencias negativas recaen en otra parte. Aparece en seguros (el asegurado toma más riesgos), en préstamos bancarios, en relaciones empleador-empleado." },
+      { id:"8-9",  pregunta:"¿Qué es el poder de mercado y por qué constituye una falla de mercado? ¿Qué diferencia hay entre monopolio natural y artificial?", clave:"El poder de mercado permite fijar precios por encima del CMg, generando pérdida de eficiencia. El monopolio natural surge de economías de escala técnicas. El monopolio artificial surge de barreras regulatorias o conductas anticompetitivas." },
+      { id:"8-10", pregunta:"¿Cuáles son los instrumentos del Estado para corregir externalidades positivas? Explicá al menos dos.", clave:"1) Subsidios: reducen el costo privado para acercar la producción al óptimo social (ej: subsidio a la educación). 2) Provisión pública directa (ej: vacunas gratuitas). 3) Regulación que obliga a las actividades (ej: educación obligatoria)." },
+    ]
+  },
+  {
+    id: 9,
+    titulo: "Introducción a la Macroeconomía",
+    descripcion: "PBI, inflación, desempleo y cuentas nacionales",
+    preguntas: [
+      { id:"9-1",  pregunta:"¿Qué mide el Producto Bruto Interno (PBI)? ¿Por qué es importante como indicador económico?", clave:"El PBI mide el valor de mercado de todos los bienes y servicios finales producidos en un país durante un período. Es importante como indicador de actividad económica y nivel de vida, aunque tiene limitaciones: no mide distribución, economía informal ni bienestar subjetivo." },
+      { id:"9-2",  pregunta:"Explicá los tres enfoques para medir el PBI (gasto, ingreso y producción) y por qué arrojan el mismo resultado.", clave:"Gasto: PBI = C + I + G + (X-M). Ingreso: suma de salarios, rentas, beneficios e intereses. Producción: suma del valor agregado en cada etapa. Arrojan el mismo resultado porque cada peso de gasto es ingreso para alguien, y el valor agregado equivale a los ingresos generados." },
+      { id:"9-3",  pregunta:"¿Qué diferencia existe entre PBI nominal y PBI real? ¿Por qué es preferible usar el PBI real para comparaciones intertemporales?", clave:"El PBI nominal está en precios corrientes y puede crecer por más producción o por inflación. El PBI real está deflactado a precios de un año base y solo refleja cambios en la producción física. Es preferible porque elimina el efecto de la inflación." },
+      { id:"9-4",  pregunta:"¿Qué es el deflactor del PBI y cómo se calcula? ¿En qué se diferencia del IPC?", clave:"Deflactor = (PBI nominal / PBI real) × 100. Mide la variación de los precios de todos los bienes producidos. El IPC mide la variación en el costo de una canasta fija de bienes consumidos por hogares. El deflactor es más amplio; el IPC refleja mejor el costo de vida." },
+      { id:"9-5",  pregunta:"Definí y diferenciá: desempleo friccional, estructural y cíclico.", clave:"Friccional: desempleo transitorio por el tiempo que lleva encontrar trabajo al cambiar de empleo. Estructural: desajuste entre habilidades de trabajadores y las demandadas (cambios tecnológicos o sectoriales). Cíclico: causado por recesiones; disminuye en expansiones." },
+      { id:"9-6",  pregunta:"¿Qué es la tasa de desempleo? ¿Cuáles son sus limitaciones como medida del mercado laboral?", clave:"Tasa de desempleo = (desempleados / PEA) × 100. Limitaciones: no incluye desempleados ocultos (desalentados), subestima el subempleo, no refleja calidad del empleo ni salarios." },
+      { id:"9-7",  pregunta:"¿Qué es la inflación y cuáles son sus principales costos económicos?", clave:"La inflación es el aumento sostenido y generalizado del nivel de precios. Costos: 1) Erosión del poder adquisitivo. 2) Distorsión de precios relativos. 3) Costos de menú. 4) Redistribución de riqueza (deudores ganan, acreedores pierden en términos reales)." },
+      { id:"9-8",  pregunta:"¿Qué componentes integran la demanda agregada según el enfoque del gasto? Explicá brevemente cada componente.", clave:"DA = C + I + G + (X-M). C: consumo de hogares (depende del ingreso disponible). I: inversión de empresas (sensible a tasas de interés). G: gasto público. (X-M): exportaciones netas (depende del tipo de cambio y actividad externa)." },
+      { id:"9-9",  pregunta:"Explicá la diferencia entre una economía en expansión y una en recesión. ¿Qué es el ciclo económico?", clave:"El ciclo económico son las fluctuaciones en el nivel de actividad alrededor de la tendencia de largo plazo. La expansión es la fase de crecimiento del PBI real y caída del desempleo. La recesión es la caída del PBI real durante dos trimestres consecutivos o más." },
+      { id:"9-10", pregunta:"¿Qué es el PBI per cápita y por qué no es suficiente para medir el nivel de bienestar de la población?", clave:"El PBI per cápita es el PBI total dividido la población. Sirve como aproximación del ingreso promedio. No es suficiente porque ignora la distribución del ingreso, no considera la economía informal, el trabajo no remunerado, la calidad de vida ni la sustentabilidad ambiental." },
+    ]
+  },
+];
+
+
+// ══════════════════════════════════════════════════════════
+// ESTADO
+// ══════════════════════════════════════════════════════════
+let currentStudent  = { nombre: '', apellido: '', universidad: '', carrera: '', email: '' };
+let currentUnitIdx  = -1;
+let currentQIdx     = 0;
+let sessionAnswers  = {};  // { unitId: { qIdx: 'texto respuesta' } }
+let habilitadas     = [];  // IDs de unidades habilitadas, cargadas desde config.json
+
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async () => {
+  // Cargar unidades habilitadas desde config.json
+  try {
+    const res  = await fetch('config.json?v=' + Date.now());
+    const data = await res.json();
+    habilitadas = Array.isArray(data.habilitadas) ? data.habilitadas : [];
+  } catch {
+    // Si no se puede cargar (ej: abierto localmente), habilitar solo unidad 1
+    habilitadas = [1];
+  }
+
+  renderUnits();
+  document.getElementById('inputNombre').addEventListener('keydown',      e => { if (e.key === 'Enter') document.getElementById('inputApellido').focus(); });
+  document.getElementById('inputApellido').addEventListener('keydown',    e => { if (e.key === 'Enter') document.getElementById('inputUniversidad').focus(); });
+  document.getElementById('inputUniversidad').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('inputCarrera').focus(); });
+  document.getElementById('inputCarrera').addEventListener('keydown',     e => { if (e.key === 'Enter') startSession(); });
+});
+
+
+// ══════════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ══════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startSession() {
+  const nombre      = document.getElementById('inputNombre').value.trim();
+  const apellido    = document.getElementById('inputApellido').value.trim();
+  const universidad = document.getElementById('inputUniversidad').value.trim();
+  const carrera     = document.getElementById('inputCarrera').value.trim();
+
+  if (!nombre || !apellido || !universidad || !carrera) {
+    alert('Por favor completá todos los campos.');
+    return;
+  }
+
+  currentStudent = { nombre, apellido, universidad, carrera, email: '' };
+
+  const badge = document.getElementById('studentBadge');
+  badge.textContent = `${nombre} ${apellido}`;
+  badge.style.display = 'inline-block';
+
+  document.getElementById('welcomeText').textContent = `Bienvenido/a, ${nombre}`;
+  renderUnits();
+  showScreen('screen-units');
+}
+
+function renderUnits() {
+  const grid = document.getElementById('unitsGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  UNIDADES.forEach((unit, i) => {
+    const unlocked = habilitadas.includes(unit.id);
+    const answers  = sessionAnswers[unit.id] || {};
+    const answered = Object.keys(answers).length;
+    const total    = unit.preguntas.length;
+
+    if (unlocked) {
+      // ── Tarjeta habilitada ──
+      let progressHtml = '';
+      let badgeHtml    = '';
+      if (answered === total) {
+        badgeHtml    = `<div class="unit-badge">✓ Completada</div>`;
+        progressHtml = `<div class="unit-progress" style="color:var(--success)">Completada</div>`;
+      } else if (answered > 0) {
+        progressHtml = `<div class="unit-progress">${answered} de ${total} preguntas respondidas</div>`;
+      } else {
+        progressHtml = `<div class="unit-progress">${total} preguntas</div>`;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'unit-card';
+      card.onclick   = () => openUnit(i);
+      card.innerHTML = `
+        ${badgeHtml}
+        <div class="unit-number">Unidad ${unit.id}</div>
+        <div class="unit-title">${unit.titulo}</div>
+        <div class="unit-desc">${unit.descripcion}</div>
+        ${progressHtml}
+      `;
+      grid.appendChild(card);
+
+    } else {
+      // ── Tarjeta bloqueada (solo visual, sin formulario) ──
+      const card = document.createElement('div');
+      card.className = 'unit-card-locked';
+      card.innerHTML = `
+        <div class="unit-lock-icon">🔒</div>
+        <div class="unit-number">Unidad ${unit.id}</div>
+        <div class="unit-title">${unit.titulo}</div>
+        <div class="unit-desc">${unit.descripcion}</div>
+        <div class="unit-progress">Disponible próximamente</div>
+      `;
+      grid.appendChild(card);
+    }
+  });
+}
+
+
+function openUnit(unitIdx) {
+  currentUnitIdx = unitIdx;
+  currentQIdx    = 0;
+  if (!sessionAnswers[UNIDADES[unitIdx].id]) sessionAnswers[UNIDADES[unitIdx].id] = {};
+  showQuestion();
+}
+
+function goToUnits() {
+  renderUnits();
+  showScreen('screen-units');
+}
+
+
+// ══════════════════════════════════════════════════════════
+// PANTALLA DE PREGUNTA
+// ══════════════════════════════════════════════════════════
+function showQuestion() {
+  const unit     = UNIDADES[currentUnitIdx];
+  const question = unit.preguntas[currentQIdx];
+  const answers  = sessionAnswers[unit.id] || {};
+  const total    = unit.preguntas.length;
+  const current  = currentQIdx + 1;
+  const pct      = Math.round((currentQIdx / total) * 100);
+
+  document.getElementById('questionUnitName').textContent = `Unidad ${unit.id}: ${unit.titulo}`;
+  document.getElementById('progressText').textContent     = `Pregunta ${current} de ${total}`;
+  document.getElementById('progressPct').textContent      = `${pct}%`;
+  document.getElementById('progressFill').style.width     = `${pct}%`;
+
+  // Dots
+  const dotsEl = document.getElementById('questionDots');
+  dotsEl.innerHTML = '';
+  unit.preguntas.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'q-dot';
+    dot.textContent = i + 1;
+    if (i === currentQIdx) {
+      dot.classList.add('current');
+    } else {
+      if (answers[i] !== undefined) dot.classList.add('answered');
+      dot.onclick = () => { saveCurrentAnswer(); currentQIdx = i; showQuestion(); };
+    }
+    dotsEl.appendChild(dot);
+  });
+
+  document.getElementById('questionNumber').textContent = `Pregunta ${current}`;
+  document.getElementById('questionText').textContent   = question.pregunta;
+
+  // Poblar textarea con respuesta existente (editable hasta enviar)
+  const answerEl = document.getElementById('studentAnswer');
+  answerEl.value    = answers[currentQIdx] !== undefined ? answers[currentQIdx] : '';
+  answerEl.disabled = false;
+
+  // Botón anterior: oculto en la primera pregunta
+  document.getElementById('btnPrev').style.display = currentQIdx === 0 ? 'none' : 'inline-flex';
+
+  // Botón siguiente: cambia texto en la última pregunta
+  const isLast = currentQIdx === total - 1;
+  document.getElementById('btnNext').textContent = isLast ? 'Ver resumen →' : 'Siguiente →';
+
+  showScreen('screen-question');
+}
+
+function saveCurrentAnswer() {
+  const unit   = UNIDADES[currentUnitIdx];
+  const answer = document.getElementById('studentAnswer').value.trim();
+  if (!sessionAnswers[unit.id]) sessionAnswers[unit.id] = {};
+  if (answer) sessionAnswers[unit.id][currentQIdx] = answer;
+}
+
+function prevQuestion() {
+  saveCurrentAnswer();
+  if (currentQIdx > 0) {
+    currentQIdx--;
+    showQuestion();
+  }
+}
+
+function nextQuestion() {
+  saveCurrentAnswer();
+  const unit = UNIDADES[currentUnitIdx];
+  if (currentQIdx < unit.preguntas.length - 1) {
+    currentQIdx++;
+    showQuestion();
+  } else {
+    // Verificar que todas las preguntas estén respondidas antes de ir al resumen
+    const answers = sessionAnswers[unit.id] || {};
+    const sinResponder = unit.preguntas.reduce((acc, _, i) => answers[i] === undefined ? acc + 1 : acc, 0);
+    if (sinResponder > 0) {
+      alert(`Todavía te falta responder ${sinResponder} pregunta${sinResponder > 1 ? 's' : ''}. Revisá los puntos sin marcar.`);
+      return;
+    }
+    showSummary();
+  }
+}
+
+function retryUnit() {
+  if (sessionAnswers[UNIDADES[currentUnitIdx].id])
+    delete sessionAnswers[UNIDADES[currentUnitIdx].id];
+  openUnit(currentUnitIdx);
+}
+
+
+// ══════════════════════════════════════════════════════════
+// RESUMEN Y ENVÍO
+// ══════════════════════════════════════════════════════════
+function showSummary() {
+  const unit    = UNIDADES[currentUnitIdx];
+  const answers = sessionAnswers[unit.id] || {};
+
+  document.getElementById('summaryUnitName').textContent = unit.titulo;
+
+  const list = document.getElementById('summaryList');
+  list.innerHTML = '';
+  unit.preguntas.forEach((q, i) => {
+    const item = document.createElement('div');
+    item.className = 'summary-q-item';
+    item.innerHTML = `
+      <div class="summary-q-num">P${i+1}</div>
+      <div class="summary-q-text">${answers[i] !== undefined ? answers[i] : '<em style="color:var(--gray-400)">Sin respuesta</em>'}</div>
+    `;
+    list.appendChild(item);
+  });
+
+  // Reset estado de envío y ocultar panel de correctas
+  const statusEl = document.getElementById('sendStatus');
+  statusEl.classList.remove('visible');
+  statusEl.innerHTML = '';
+  document.getElementById('btnSend').disabled    = false;
+  document.getElementById('btnSend').textContent = 'Enviar respuestas →';
+  document.getElementById('correctAnswersReveal').style.display = 'none';
+  document.getElementById('correctAnswersList').innerHTML = '';
+
+  showScreen('screen-summary');
+}
+
+async function enviarRespuestas() {
+  const unit    = UNIDADES[currentUnitIdx];
+  const answers = sessionAnswers[unit.id] || {};
+
+  const btn      = document.getElementById('btnSend');
+  const statusEl = document.getElementById('sendStatus');
+
+  // Validar URL configurada
+  if (!CONFIG.SHEETS_URL || CONFIG.SHEETS_URL === 'https://script.google.com/macros/s/AKfycbw3DKUhEgBX2UoJwyPrPV4R-qtt8jpEWJJqnelUknL7afS1l78YdaTsZlztlFRlWwYGYQ/exec') {
+    statusEl.className   = 'send-status visible alert alert-warning';
+    statusEl.innerHTML   = '⚠ La planilla no está configurada todavía. Contactá a tu docente.';
+    return;
+  }
+
+  btn.disabled    = true;
+  btn.textContent = 'Enviando…';
+
+  const payload = {
+    nombre:      currentStudent.nombre,
+    apellido:    currentStudent.apellido,
+    universidad: currentStudent.universidad,
+    carrera:     currentStudent.carrera,
+    email:       currentStudent.email,
+    unidad:      `Unidad ${unit.id}: ${unit.titulo}`,
+  };
+  for (let i = 0; i < 10; i++) {
+    payload[`r${i+1}`] = answers[i] !== undefined ? answers[i] : '';
+  }
+
+  try {
+    await fetch(CONFIG.SHEETS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+
+    // Con no-cors no podemos leer la respuesta, pero si no tiró error, se envió.
+    btn.textContent    = '✓ Enviado';
+    btn.disabled       = true;
+    statusEl.className = 'send-status visible alert alert-success';
+    statusEl.innerHTML = '✅ Tus respuestas fueron enviadas correctamente.';
+
+    // Revelar respuestas correctas
+    const revealEl = document.getElementById('correctAnswersReveal');
+    const listEl   = document.getElementById('correctAnswersList');
+    listEl.innerHTML = '';
+    unit.preguntas.forEach((q, i) => {
+      const item = document.createElement('div');
+      item.className = 'reveal-item';
+      item.innerHTML = `
+        <div class="reveal-q-label">Pregunta ${i + 1}</div>
+        <div class="reveal-q-text">${q.pregunta}</div>
+        <div class="reveal-sub-label" style="color:var(--gray-500); margin-bottom:0.25rem;">Tu respuesta</div>
+        <div class="reveal-student">${answers[i] !== undefined ? answers[i] : '<em style="color:var(--gray-400)">Sin respuesta</em>'}</div>
+        <div class="reveal-sub-label" style="color:var(--success); margin-top:0.6rem; margin-bottom:0.25rem;">✅ Respuesta correcta</div>
+        <div class="reveal-correct">${q.clave}</div>
+      `;
+      listEl.appendChild(item);
+    });
+    revealEl.style.display = 'block';
+    revealEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    btn.disabled    = false;
+    btn.textContent = 'Reintentar →';
+    statusEl.className = 'send-status visible alert alert-danger';
+    statusEl.innerHTML = `⚠ No se pudo enviar. Verificá tu conexión a internet e intentá de nuevo.<br><small>${err.message}</small>`;
+  }
+}
+</script>
+</body>
+</html>
